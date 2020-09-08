@@ -1,0 +1,9 @@
+.app__headerImage {
+  object-fit: contain;
+  width: 250px;
+}
+
+.app__header {
+  background-image: #fff;
+  border-bottom: 1px solid lightgray;
+}
