@@ -5,3 +5,8 @@
 .app {
   background-color: #fafafa;
 }
+
+.app__signup {
+  display: flex;
+  flex-direction: column;
+}

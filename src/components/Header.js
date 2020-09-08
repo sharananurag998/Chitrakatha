@@ -5,7 +5,7 @@ import Logo from "../logo.png";
 function Header() {
   return (
     <div className="app__header">
-      <img className="app__headerImage" src={Logo} />
+      <img className="app__headerImage" src={Logo} alt="App logo" />
     </div>
   );
 }
