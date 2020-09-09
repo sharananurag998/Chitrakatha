@@ -39,7 +39,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
-
+  const [openSignin, setOpenSignin] = useState(false);
   useEffect(() => {
     db.collection("posts").onSnapshot((snapshot) => {
       setPosts(
@@ -78,6 +78,18 @@ function App() {
         return authUser.user.updateProfile({ displayName: username });
       })
       .catch((e) => alert(e.message));
+
+    setOpen(false);
+  };
+
+  const signIn = (event) => {
+    event.preventDefault();
+
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .catch((e) => alert(e.message));
+
+    setOpenSignin(false);
   };
 
   return (
@@ -112,16 +124,53 @@ function App() {
           </form>
         </div>
       </Modal>
+
+      <Modal open={openSignin} onClose={() => setOpenSignin(false)}>
+        <div style={modalStyle} className={classes.paper}>
+          <form className="app__signup">
+            <center>
+              <img className="app__headerImage" src={Logo} alt="App Logo" />
+            </center>
+            <Input
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button onClick={signIn} type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
+      </Modal>
       {/* Header */}
       <Header />
-
-      <Button
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        Sign Up
-      </Button>
+      {user ? (
+        <Button onClick={() => auth.signOut()}> Sign Out </Button>
+      ) : (
+        <div className="app__loginContainer">
+          <Button
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
+            Sign Up
+          </Button>
+          <Button
+            onClick={() => {
+              setOpenSignin(true);
+            }}
+          >
+            Sign In
+          </Button>
+        </div>
+      )}
 
       {/* Posts */}
       {posts.map(({ post, id }) => (
