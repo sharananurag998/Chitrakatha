@@ -4,6 +4,11 @@
 }
 
 .app__header {
-  background-image: #fff;
+  background: #fff;
   border-bottom: 1px solid lightgray;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  float: top;
+  width: 100%;
 }

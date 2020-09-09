@@ -3,52 +3,22 @@ import "./App.css";
 import Header from "./components/Header";
 import Post from "./components/Post";
 import { db, auth } from "./firebase";
-import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
-import { Button, Input } from "@material-ui/core";
-import Logo from "./logo.png";
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}));
+import ImageUpload from "./components/ImageUpload";
 
 function App() {
-  const classes = useStyles();
-  const [modalStyle] = useState(getModalStyle);
   const [posts, setPosts] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
-  const [openSignin, setOpenSignin] = useState(false);
   useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) => {
-      setPosts(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          post: doc.data(),
-        }))
-      );
-    });
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            post: doc.data(),
+          }))
+        );
+      });
   }, []);
 
   useEffect(() => {
@@ -67,120 +37,34 @@ function App() {
       //perform cleanup
       unsubscribe();
     };
-  }, [user, username]);
-
-  const signUp = (event) => {
-    event.preventDefault();
-
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((authUser) => {
-        return authUser.user.updateProfile({ displayName: username });
-      })
-      .catch((e) => alert(e.message));
-
-    setOpen(false);
-  };
-
-  const signIn = (event) => {
-    event.preventDefault();
-
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .catch((e) => alert(e.message));
-
-    setOpenSignin(false);
-  };
+  }, [user]);
 
   return (
     <div className="app">
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <div style={modalStyle} className={classes.paper}>
-          <form className="app__signup">
-            <center>
-              <img className="app__headerImage" src={Logo} alt="App Logo" />
-            </center>
-            <Input
-              placeholder="Username"
-              type="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <Input
-              placeholder="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              placeholder="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button onClick={signUp} type="submit">
-              Submit
-            </Button>
-          </form>
-        </div>
-      </Modal>
-
-      <Modal open={openSignin} onClose={() => setOpenSignin(false)}>
-        <div style={modalStyle} className={classes.paper}>
-          <form className="app__signup">
-            <center>
-              <img className="app__headerImage" src={Logo} alt="App Logo" />
-            </center>
-            <Input
-              placeholder="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              placeholder="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button onClick={signIn} type="submit">
-              Submit
-            </Button>
-          </form>
-        </div>
-      </Modal>
       {/* Header */}
-      <Header />
-      {user ? (
-        <Button onClick={() => auth.signOut()}> Sign Out </Button>
+      <Header user={user} />
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName} />
       ) : (
-        <div className="app__loginContainer">
-          <Button
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            Sign Up
-          </Button>
-          <Button
-            onClick={() => {
-              setOpenSignin(true);
-            }}
-          >
-            Sign In
-          </Button>
-        </div>
+        <h3 style={{ margin: "20px" }}>
+          You need to be logged in to upload files
+        </h3>
       )}
 
       {/* Posts */}
-      {posts.map(({ post, id }) => (
-        <Post
-          key={id}
-          username={post.username}
-          caption={post.caption}
-          imageUrl={post.imageUrl}
-        />
-      ))}
+      <div className="app__posts">
+        <div className="app__postsleft">
+          {posts.map(({ post, id }) => (
+            <Post
+              key={id}
+              postId={id}
+              username={post.username}
+              caption={post.caption}
+              imageUrl={post.imageUrl}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

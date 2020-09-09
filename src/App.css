@@ -10,3 +10,13 @@
   display: flex;
   flex-direction: column;
 }
+
+.app__posts {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.app__postsright {
+  margin-left: 20px;
+}
