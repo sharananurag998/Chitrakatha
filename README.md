@@ -1,4 +1,14 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Chitrakatha
+
+A photo sharing website created using React. The backend is built using Firebase Firestore and Authentication.
+
+## Author
+
+Anurag Sharan (sharananurag998)
+
+# Demo
+
+The app is deployed on Firebase. You can see a working demo of the app at https://chitrakatha-ab4ed.web.app/
 
 ## Available Scripts
 

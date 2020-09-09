@@ -14,6 +14,8 @@ function getModalStyle() {
     top: `${top}%`,
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
+    minWidth: "250px",
+    width: "40%",
   };
 }
 

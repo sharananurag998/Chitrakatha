@@ -46,7 +46,7 @@ function App() {
       {user?.displayName ? (
         <ImageUpload username={user.displayName} />
       ) : (
-        <h3 style={{ margin: "20px" }}>
+        <h3 style={{ margin: "20px", textAlign: "center" }}>
           You need to be logged in to upload files
         </h3>
       )}

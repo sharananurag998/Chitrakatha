@@ -1,6 +1,7 @@
 .app__headerImage {
   object-fit: contain;
-  width: 250px;
+  width: 40%;
+  max-width: 250px;
 }
 
 .app__header {
